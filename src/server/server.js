@@ -79,7 +79,32 @@ app.post("/api/register",async (req, res)=>{
         return res.sendStatus(201);
     }
 })
-
+//로그인
+app.post("/api/login", async(req, res)=>{
+    console.log(req.body);
+    const user_id = req.body.id;
+    const password = req.body.password;
+    const result = await new Promise((resolve, reject)=>{
+        db.query("select * from user_table where user_id=?", [user_id], (er, results)=>{
+            if(er){
+                reject(er)
+            }else{
+                resolve(results)
+            }
+        })
+    })
+    console.log(result.length);
+    if(result.length === 0){
+        return res.status(403).send('id가 존재하지 않습니다.')
+    }
+    const match = await bcrypt.compare(password, result[0].password);
+    console.log(match);
+    if(match){
+        res.status(200).send('로그인 성공');
+    }else{
+        res.status(403).send('비밀번호가 일치하지 않습니다.');
+    }
+})
 
 app.listen(PORT, ()=>{
     console.log(`${PORT} 서버실행==============================`);

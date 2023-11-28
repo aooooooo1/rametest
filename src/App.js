@@ -69,7 +69,17 @@ function App() {
     const handlelogin = (e)=>{
         setLogin({...login, [e.target.name]:e.target.value,})
     }
-    console.log(login);
+    const handleloginEnter = ()=>{
+        axios.post(`${port}/api/login`,login)
+        .then(res=>{
+            console.log(res);
+            alert(res.data);
+        })
+        .catch(er=>{
+            console.log(er.response.data);
+            alert(er.response.data);
+        });
+    }
     //처음 로딩시 실행
     useEffect(()=>{
         selectAll();
@@ -87,7 +97,7 @@ function App() {
                 <h4>로그인</h4>
                 <input type="text" placeholder="id" name="id" value={login.id} onChange={handlelogin}/>
                 <input type="password" placeholder="password" name="password" value={login.password} onChange={handlelogin}/>
-                <button onClick={handleRegister}>가입</button>
+                <button onClick={handleloginEnter}>로그인</button>
             </div>
             <form>
                 <input type="text" placeholder="name" name="name" value={formData.name} onChange={handleChange}/>
