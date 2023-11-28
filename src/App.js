@@ -1,18 +1,23 @@
 import axios from "axios";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 function App() {
+    const port = 'http://localhost:4000'
     //데이터 불러오기
     const [movie, setMovie] = useState([]);
-    const selectAll =  () => {
-        axios.get("/movies").then((result)=>{
+    const selectAll = useCallback( () => {
+        axios.get(`${port}/movies`).then((result)=>{
+            console.log('test');
             setMovie(result.data);
-        });
-    };
+        }).catch((er)=>{
+            console.log(er);
+        })
+    },[]);
+    //상세데이터 불러오기
     const [movieDetail, setMovieDetail] = useState(null);
     const showMovieDetail = async (e, id) => {
-        const result = await axios.get(`/movies/${id}`);
+        const result = await axios.get(`${port}/movies/${id}`);
         setMovieDetail(result.data[0]);
     };
     //폼 작성
@@ -24,23 +29,66 @@ function App() {
     const handleSubmit =  (e)=>{
         e.preventDefault();
         e.stopPropagation();
-        axios.post('/api/save', formData).then(()=>{
+        axios.post(`${port}/api/save`, formData).then(()=>{
             selectAll();
-        })
+        }).catch(er=>console.log(er))
     }
     //삭제
     const handleDelete = (e, id)=>{
         e.stopPropagation();
-        axios.delete(`/api/delete/${id}`).then(()=>{
+        console.log(id);
+        axios.delete(`${port}/api/delete/${id}`).then(()=>{
             selectAll();
-        })
+        }).catch(er=>console.log(er))
     }
+    //회원가입 벨류업데이트
+    const [register, setRegister] = useState({id:'', password:''});
+    const handleChangeRegister = (e)=>{
+        setRegister({...register, [e.target.name]:e.target.value});
+    }
+    //가입
+    const handleRegister = ()=>{
+        if(register.id === ''){
+            alert('id를 채워주세요');
+            return
+        }
+        if(register.password === ''){
+            alert('password를 채워주세요');
+            return
+        }
+        axios.post(`${port}/api/register`, register).then((res)=>{
+            console.log('res => ', res);
+            alert('회원가입 완료되었습니다.')
+        }).catch(er=>{
+            console.log(er.response)
+            alert('다른 id를 사용해주세요.')
+        });
+    }
+    //로그인
+    const [login, setLogin] = useState({id:'',password:'' });
+    const handlelogin = (e)=>{
+        setLogin({...login, [e.target.name]:e.target.value,})
+    }
+    console.log(login);
+    //처음 로딩시 실행
     useEffect(()=>{
         selectAll();
     },[])
     return (
         <div id="App">
             <h1>react-express-mysql connection</h1>
+            <div className="registerForm">
+                <h4>회원가입</h4>
+                <input type="text" placeholder="id" name="id" value={register.id} onChange={handleChangeRegister}/>
+                <input type="password" placeholder="password" name="password" value={register.password} onChange={handleChangeRegister}/>
+                <button onClick={handleRegister}>가입</button>
+            </div>
+            <div className="registerForm">
+                <h4>로그인</h4>
+                <input type="text" placeholder="id" name="id" value={login.id} onChange={handlelogin}/>
+                <input type="password" placeholder="password" name="password" value={login.password} onChange={handlelogin}/>
+                <button onClick={handleRegister}>가입</button>
+            </div>
             <form>
                 <input type="text" placeholder="name" name="name" value={formData.name} onChange={handleChange}/>
                 <input type="text" placeholder="capital" name="capital" value={formData.capital} onChange={handleChange}/>
