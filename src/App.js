@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 axios.defaults.withCredentials = true;
 
 function App() {
-    const port = 'https://testpdqo-c40750fde92a.herokuapp.com/'
+    const port = 'https://testpdqo-c40750fde92a.herokuapp.com'
     
     //쿠키가져오기
     const [userCookie, setUserCookie] = useState('');
