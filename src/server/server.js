@@ -1,20 +1,25 @@
 const express = require('express');
+const {valiUser} = require('./middleware/auth');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 const app = express();
-app.use(cors())
+app.use(cookieParser());
+app.use(
+    cors({
+        credentials: true,
+        origin: process.env.FRONTEND_URL ?? "http://localhost:3000",
+        optionsSuccessStatus: 200,
+    })
+);
 app.use(express.json());
 const bcrypt = require('bcrypt');
 const PORT = process.env.PORT || 4000;
 const db = require('./config/db');
 
-app.get('/', (req, res)=>{
-    console.log('root');
-})
 //데이터 가져오기
-app.get('/movies', (req, res)=>{
-    console.log('/movies, 서버가 반응함, ');
+app.get('/movies',(req, res)=>{
     db.query('select * from nations_table', (er, results)=>{
-        console.log('movies 에러 ',er);
         res.status(200).send(results);
         console.log('정상적으로 데이터를 가져옵니다.');
     })
@@ -32,18 +37,20 @@ app.get('/movies/:id', (req,res)=>{
     })
 })
 //등록
-app.post("/api/save",(req, res)=>{
-    const {name , capital, population} = req.body;
+app.post("/api/save",valiUser,(req, res)=>{
+    const { token } = req.cookies;
+    const { user_id } = jwt.verify(token, 'secure');
+    const {name , capital, population, date} = req.body;
     const populationInt = parseInt(population);
-    const sql = "insert into nations_table(name, capital, population) values(?,?,?)";
-    db.query(sql, [name, capital, populationInt], (er, results)=>{
+    const sql = "insert into nations_table(name, capital, population, user_id, date_) values(?,?,?,?,?)";
+    db.query(sql, [name, capital, populationInt, user_id, date], (er, results)=>{
         console.log(er);
-        console.log('등록 되었습니다.',results);
+        console.log('글이 등록 되었습니다.');
         res.sendStatus(200);
     })
 })
 //삭제
-app.delete("/api/delete/:id", (req,res)=>{
+app.delete("/api/delete/:id", valiUser, (req,res)=>{
     const id = req.params.id;
     console.log('id');
     const sql = "delete from nations_table where id=?";
@@ -98,9 +105,11 @@ app.post("/api/login", async(req, res)=>{
         return res.status(403).send('id가 존재하지 않습니다.')
     }
     const match = await bcrypt.compare(password, result[0].password);
-    console.log(match);
     if(match){
-        res.status(200).send('로그인 성공');
+        const token = jwt.sign({user_id},'secure');
+        res.cookie('token',token);
+        const tokenUser_id = jwt.verify(token,'secure');
+        res.send(tokenUser_id);
     }else{
         res.status(403).send('비밀번호가 일치하지 않습니다.');
     }
