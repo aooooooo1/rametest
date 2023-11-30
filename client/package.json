@@ -25,7 +25,7 @@
     "serve": "^14.2.1",
     "web-vitals": "^2.1.4"
   },
-  "proxy": "http://localhost:4000",
+  "proxy": "https://rametest-fcaca2de55b8.herokuapp.com",
   "scripts": {
     "start": "DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",
     "start-server": "nodemon ../server/server.js",
