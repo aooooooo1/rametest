@@ -9,7 +9,7 @@ app.use(cookieParser());
 app.use(
     cors({
         credentials: true,
-        origin: process.env.FRONTEND_URL ?? "https://testpdqo-test.netlify.app",
+        origin: process.env.FRONTEND_URL ?? "https://localhost:3000",
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         optionsSuccessStatus: 200,
     })
