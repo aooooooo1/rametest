@@ -25,6 +25,7 @@ app.use(
         }
     })
 );
+app.use(express.static(path.join(__dirname, 'client', 'build')));
 app.use(express.json());
 const bcrypt = require('bcrypt');
 const PORT = process.env.PORT || 4000;
