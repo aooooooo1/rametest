@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 axios.defaults.withCredentials = true;
 
 function App() {
-    const port = 'https://testpdqo-c40750fde92a.herokuapp.com'
+    const port = 'http://localhost:4000'
     
     //쿠키가져오기
     const [userCookie, setUserCookie] = useState('');
@@ -24,7 +24,6 @@ function App() {
     const selectAll = useCallback( () => {
         axios.get(`${port}/movies`).then((result)=>{
             setMovie(result.data);
-            console.log(result.data);
         }).catch((er)=>{
             console.log(er);
         })
