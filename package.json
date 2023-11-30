@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "heroku-prebuild": "cd client && npm install && npm run build",
+    "heroku-prebuild": "cd client && npm install && npm run build && mv build ../server",
     "start": "cd server && npm install && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
