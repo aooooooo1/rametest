@@ -1,6 +1,5 @@
 const express = require('express');
 const {valiUser} = require('./middleware/auth');
-const session = require('express-session')
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
@@ -14,18 +13,6 @@ app.use(
         optionsSuccessStatus: 200,
     })
 );
-app.use(
-    session({
-        secret: process.env.SESSION_SECRET || 'Super Secret (change it)',
-        resave: true,
-        saveUninitialized: false,
-        cookie: {
-            sameSite: 'None',
-            secure: process.env.NODE_ENV === "production",
-        }
-    })
-);
-app.use(express.static(path.join(__dirname, 'client', 'build')));
 app.use(express.json());
 const bcrypt = require('bcrypt');
 const PORT = process.env.PORT || 4000;
