@@ -1,0 +1,13 @@
+{
+  "name": "react-express-mysql-practice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "heroku-prebuild": "cd client && npm run build",
+    "start": "cd server && npm start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

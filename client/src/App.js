@@ -4,8 +4,9 @@ import { useCallback, useEffect, useState } from "react";
 axios.defaults.withCredentials = true;
 
 function App() {
-    const port = 'http://localhost:4000'
+    const port = 'https://testpdqo-28c22dccc824.herokuapp.com'
     
+
     //쿠키가져오기
     const [userCookie, setUserCookie] = useState('');
     const userC = ()=>{
@@ -22,7 +23,7 @@ function App() {
     //데이터 불러오기
     const [movie, setMovie] = useState([]);
     const selectAll = useCallback( () => {
-        axios.get(`${port}/movies`).then((result)=>{
+        axios.get(`${port}/api/movies`).then((result)=>{
             setMovie(result.data);
         }).catch((er)=>{
             console.log(er);
@@ -31,7 +32,7 @@ function App() {
     //상세데이터 불러오기
     const [movieDetail, setMovieDetail] = useState(null);
     const showMovieDetail = async (e, id) => {
-        const result = await axios.get(`${port}/movies/${id}`);
+        const result = await axios.get(`${port}/api/movies/${id}`);
         setMovieDetail(result.data[0]);
     };
     //폼 작성
